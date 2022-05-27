@@ -12,6 +12,7 @@ from game import Player, Ball, Feature, Block, Score_bar
 
 pygame.font.init()
 
+heightest_level = 0
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Arkanoid game")
@@ -46,7 +47,6 @@ def main():
     FPS = 60
 
     score_bar = Score_bar(3)
-    heightest_level = 0
 
     vel = 5
 
@@ -91,14 +91,20 @@ def main():
         if player.health <= 0:
             game_over_label = large_status_font.render("GAME OVER", True, RED)
             restart_lebel = status_font.render("press any key to restart", True, WHITE)
+            player_level_label = status_font.render(f"level: {score_bar.level}", True, YELLOW)
 
             WIN.blit(game_over_label, (WIDTH//2 - game_over_label.get_width()//2, HEIGHT//2 - game_over_label.get_height()//2))
             WIN.blit(restart_lebel, (WIDTH//2 - restart_lebel.get_width()//2, HEIGHT//2 - restart_lebel.get_height()//2 + 30))
+            WIN.blit(player_level_label, (WIDTH//2 - player_level_label.get_width()//2, HEIGHT//2 - player_level_label.get_height()//2 + 60))
+            if heightest_level < score_bar.level:
+                heighest_label = large_status_font.render("!new heighest level!", True, RED)
+                WIN.blit(heighest_label, (WIDTH//2 - heighest_label.get_width()//2, HEIGHT//2 - heighest_label.get_height()//2 - 60))
 
         if pause and not game_over:
             pause_label = large_status_font.render("PAUSE", True, WHITE)
 
             WIN.blit(pause_label, (WIDTH//2 - pause_label.get_width()//2, HEIGHT//2 - pause_label.get_height()//2))
+
 
         pygame.display.update()
 
