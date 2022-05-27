@@ -1,12 +1,11 @@
 import pygame
 import threading
 from random import choices,choice
-from time import sleep
 
 from Constans.Images import *
 from Constans.Valuable import *
 from Constans.Level import level
-from CollideFunc import obj_ball_collide, border_collide
+from CollideFunc import *
 from game import Player, Ball, Feature, Block, Score_bar
 
 
@@ -41,6 +40,9 @@ def mouse_click(obj, t, font, color):
 def main():
     run = True
     pause = False
+    protection = False
+    plus_lenght = False
+    game_over = False
     FPS = 60
 
     score_bar = Score_bar(3)
@@ -54,7 +56,7 @@ def main():
     balls = []
     blocks = []
     for b in choice(level):
-        blocks.append(Block(b[0],b[1],b[2],b[3],choices([1,2,3],[GREEN_W,YELLOW_W,RED_W])[0],choices(['none','PLUS_LENGHT','HEAL_POTION','POISON_POTION','SPECIAL_BALL_BOMB'],[NONE_W,PLUS_LENGHT_W,HEAL_POTION_W,POSISON_POTION_W,SPECIAL_BALL_BOMB_W])[0]))
+        blocks.append(Block(b[0],b[1],b[2],b[3],choices([1,2,3],[GREEN_W,YELLOW_W,RED_W])[0],choices(['none','PLUS_LENGHT','HEAL_POTION','POISON_POTION','SPECIAL_BALL_BOMB','PROTECTION'],[NONE_W,PLUS_LENGHT_W,HEAL_POTION_W,POSISON_POTION_W,SPECIAL_BALL_BOMB_W,PROTECTION_W])[0]))
     features = []
 
     large_status_font = pygame.font.SysFont("comicsans", 30)
@@ -79,29 +81,40 @@ def main():
             block.draw(WIN)
         for feature in features:
             feature.draw(WIN)
+        if protection:
+            pygame.draw.rect(WIN, BLUE, (0,HEIGHT - PROTECTION_HEIGHT,WIDTH,5))
 
         WIN.blit(health_label, (10, 10))
         WIN.blit(level_label, (10, HEIGHT - 7 - level_label.get_height()))
         WIN.blit(heightest_level_label, (WIDTH - heightest_level_label.get_width() - 10, 10))
 
-        if pause:
+        if player.health <= 0:
+            game_over_label = large_status_font.render("GAME OVER", True, RED)
+            restart_lebel = status_font.render("press any key to restart", True, WHITE)
+
+            WIN.blit(game_over_label, (WIDTH//2 - game_over_label.get_width()//2, HEIGHT//2 - game_over_label.get_height()//2))
+            WIN.blit(restart_lebel, (WIDTH//2 - restart_lebel.get_width()//2, HEIGHT//2 - restart_lebel.get_height()//2 + 30))
+
+        if pause and not game_over:
             pause_label = large_status_font.render("PAUSE", True, WHITE)
 
             WIN.blit(pause_label, (WIDTH//2 - pause_label.get_width()//2, HEIGHT//2 - pause_label.get_height()//2))
-            pygame.display.update()
-
 
         pygame.display.update()
+
 
     while run:
         clock.tick(FPS)
 
         redraw_window()
 
-        if not pause:
+        key_pressed = pygame.key.get_pressed()
+        if not pause and not game_over:
             #movement
-            key_pressed = pygame.key.get_pressed()
             player.movement(key_pressed)
+
+            if player.health <= 0:
+                game_over = True
 
             for ball in balls:
                 direction = set()
@@ -117,11 +130,15 @@ def main():
 
                 direction.add(obj_ball_collide('player', player, ball))
                 direction.add(border_collide(ball))
+                if protection:
+                    direction.add(protection_collide(ball))
                 ball.movement(direction, player)
                 if ball.y >= HEIGHT:
                     if ball.color != RED:
                         player.damage()
                     balls.remove(ball)
+                if player.protection_time == 0:
+                    protection = False
             
 
             for feature in features:
@@ -131,11 +148,18 @@ def main():
 
                     features.remove(feature)
                     if feature.effect == 'PLUS_LENGHT':
-                        if len(threading.enumerate()) == 1:
-                            effect_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
-                            effect_count_down.start()
-                        elif len(threading.enumerate()) > 1:
+                        if not plus_lenght:
+                            PLUS_LENGHT_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
+                            PLUS_LENGHT_count_down.start()
+                        elif plus_lenght:
                             player.plus_lenght_time += 5
+                    elif feature.effect == 'PROTECTION':
+                        if not protection:
+                            protection = True
+                            PROTECTION_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
+                            PROTECTION_count_down.start()
+                        elif protection:
+                            player.protection_time += 5
                     elif feature.effect == 'SPECIAL_BALL_BOMB':
                         balls.append(Ball(player, 8, score_bar.ball_vel, RED, 3))
                     else:
@@ -144,32 +168,29 @@ def main():
 
             if len(blocks) <= 0:
                 for b in choice(level):
-                    blocks.append(Block(b[0],b[1],b[2],b[3],choices([1,2,3],[GREEN_W,YELLOW_W,RED_W])[0],choices(['none','PLUS_LENGHT','HEAL_POTION','POISON_POTION','SPECIAL_BALL_BOMB'],[NONE_W,PLUS_LENGHT_W,HEAL_POTION_W,POSISON_POTION_W,SPECIAL_BALL_BOMB_W])[0]))
-            
-            if player.health <= 0:
-                pass
+                    blocks.append(Block(b[0],b[1],b[2],b[3],choices([1,2,3],[GREEN_W,YELLOW_W,RED_W])[0],choices(['none','PLUS_LENGHT','HEAL_POTION','POISON_POTION','SPECIAL_BALL_BOMB','PROTECTION'],[NONE_W,PLUS_LENGHT_W,HEAL_POTION_W,POSISON_POTION_W,SPECIAL_BALL_BOMB_W,PROTECTION_W])[0]))
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                player.plus_lenght_time = 1
+                player.protection_time = 1
                 run = False
+                quit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LSHIFT and not pause:
+                if event.key == pygame.K_LSHIFT and not pause and not game_over:
                     ball = Ball(player, 8, score_bar.ball_vel, WHITE, 1)
                     balls.append(ball)
-                elif event.key == pygame.K_ESCAPE:
-                    timer = 3
-                    if pause == True:
-                        sleep(1)
-                        timer -= 1
+                elif event.key == pygame.K_ESCAPE and not game_over:
                     pause = not pause
-                    
+                elif event.key != pygame.K_ESCAPE and game_over:
+                    run = False 
+                    main()
+                elif event.key == pygame.K_ESCAPE and game_over:
+                    run = False
+                    main_menu()
 
 
-                     
-
-
-    quit()
 
 
 def main_menu():

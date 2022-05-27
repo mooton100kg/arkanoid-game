@@ -1,6 +1,6 @@
 import pygame
 from Constans.Valuable import IMAGE_HEIGHT, IMAGE_WIDTH
-from Constans.Images import PLUS_LENGHT, HEAL_POTION, POISON_POTION, SPECIAL_BALL_BOMB
+from Constans.Images import PLUS_LENGHT, HEAL_POTION, POISON_POTION, PROTECTION, SPECIAL_BALL_BOMB
 
 class Feature:
     def __init__(self, block, vel, effect):
@@ -17,6 +17,8 @@ class Feature:
             self.image = POISON_POTION
         elif effect == 'SPECIAL_BALL_BOMB':
             self.image = SPECIAL_BALL_BOMB
+        elif effect == 'PROTECTION':
+            self.image = PROTECTION
 
     def draw(self, window):
         if self.effect != 'None':

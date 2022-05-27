@@ -14,6 +14,7 @@ class Player:
         self.health = 5
         self.color = WHITE
         self.plus_lenght_time = 0
+        self.protection_time = 0
         
     def draw(self, window):
         self.block = pygame.draw.rect(window,self.color, (self.x - self.width//2, self.y - self.height//2, self.width, self.height))
@@ -34,7 +35,7 @@ class Player:
     def collect_feature(self, effect):
         if effect == 'PLUS_LENGHT':
             plus = 0
-            self.plus_lenght_time += 5
+            self.plus_lenght_time += 10
             loop = True
             for i in range(0,55):
                 sleep(0.01)
@@ -45,13 +46,21 @@ class Player:
             while loop:
                 sleep(1)
                 self.plus_lenght_time -= 1
-                print(self.plus_lenght_time)
-                if self.plus_lenght_time == 0:
+                if self.plus_lenght_time <= 0:
                     loop = False
 
             for i in range(0,plus):
                 sleep(0.01)
                 self.width -= 1
+        elif effect == 'PROTECTION':
+            self.protection_time = 10
+            loop = True
+            while loop:
+                sleep(1)
+                self.protection_time -= 1
+                print(self.protection_time)
+                if self.protection_time <= 0:
+                    loop = False
         elif effect == 'HEAL_POTION':
             self.health += 1
         elif effect == 'POISON_POTION':
