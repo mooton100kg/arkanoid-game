@@ -42,7 +42,7 @@ the goal of this game is to destroy the block to gain score in order to level up
 
 ## Credit
 everything by mooton100kg\
-(sorry for my bad english)
+(sorry for my bad english and the chaotic code)
 
 
 *__**this game not gonna be debuged or updated any time soon so no need for bug report thank you.**__*
