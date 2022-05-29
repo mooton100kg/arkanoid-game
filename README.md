@@ -36,8 +36,8 @@ the goal of this game is to destroy the block to gain score in order to level up
 | ----------- | ----------- |
 |![plus lenght](Assets/plus_lenght.png)| increas the lenght of player for limited times|
 |![bomt bal](Assets/bom_ball.png)| summon the special ball that have more damage than normal ball|
-|![heal](Assets/heal.png)| increas health for player|
-|![damage](Assets/damage.png)| decreas health for player|
+|![heal](Assets/heal.png)| increase health for player|
+|![damage](Assets/damage.png)| decrease health for player|
 |![protection](Assets/protection.png)| create protection platform that bounce the ball for limited times|
 
 ## Credit
