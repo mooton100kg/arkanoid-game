@@ -64,6 +64,7 @@ def main():
     small_status_font = pygame.font.SysFont("comicsans", 16)
 
     def redraw_window():
+        global heightest_level
         WIN.fill(BLACK)
 
         health_label = status_font.render(f"Health: {player.health}", True, WHITE)
@@ -95,10 +96,11 @@ def main():
 
             WIN.blit(game_over_label, (WIDTH//2 - game_over_label.get_width()//2, HEIGHT//2 - game_over_label.get_height()//2))
             WIN.blit(restart_lebel, (WIDTH//2 - restart_lebel.get_width()//2, HEIGHT//2 - restart_lebel.get_height()//2 + 30))
-            WIN.blit(player_level_label, (WIDTH//2 - player_level_label.get_width()//2, HEIGHT//2 - player_level_label.get_height()//2 + 60))
+            WIN.blit(player_level_label, (WIDTH//2 - player_level_label.get_width()//2, HEIGHT//2 - player_level_label.get_height()//2 + 80))
             if heightest_level < score_bar.level:
                 heighest_label = large_status_font.render("!new heighest level!", True, RED)
                 WIN.blit(heighest_label, (WIDTH//2 - heighest_label.get_width()//2, HEIGHT//2 - heighest_label.get_height()//2 - 60))
+                heightest_level = score_bar.level
 
         if pause and not game_over:
             pause_label = large_status_font.render("PAUSE", True, WHITE)
