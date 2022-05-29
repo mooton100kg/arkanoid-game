@@ -1,5 +1,6 @@
 import pygame
 import threading
+import sys
 from random import choices,choice
 
 from Constans.Images import *
@@ -52,9 +53,9 @@ def main():
         health_label = status_font.render(f"Health: {player.health}", True, WHITE)
         level_label = small_status_font.render(f"Level: {score_bar.level}", True, YELLOW)
         if score_bar.level < heightest_level or heightest_level == 0:
-            heightest_level_label = status_font.render(f"Heightest level: {heightest_level}", True, WHITE)
+            heightest_level_label = status_font.render(f"Heighest level: {heightest_level}", True, WHITE)
         elif score_bar.level >= heightest_level:
-            heightest_level_label = status_font.render(f"Heightest level: {score_bar.level}", True, YELLOW)
+            heightest_level_label = status_font.render(f"Heighest level: {score_bar.level}", True, YELLOW)
 
         score_bar.draw(WIN)
         player.draw(WIN)
@@ -174,7 +175,8 @@ def main():
                 player.plus_lenght_time = 1
                 player.protection_time = 1
                 run = False
-                quit()
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LSHIFT and not pause and not game_over:
                     ball = Ball(player, 8, score_bar.ball_vel, WHITE, 1)
@@ -193,7 +195,7 @@ def main():
                     main_menu()
 
 
-def mouse_click(obj, t, font, color):
+def mouse_click(obj):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     
@@ -227,14 +229,13 @@ def main_menu():
 
     while run:
         redraw()
-        mouse_click(start_rect, "Start", menu_font, RED)
+        mouse_click(start_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            
-        
-    pygame.quit()
+                pygame.quit()
+                sys.exit()
 
         
 

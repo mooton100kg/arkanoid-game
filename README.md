@@ -1,6 +1,6 @@
 ![game preview](Assets/game_preview.png)
 # BREAKING BLOCK GAME
-the goal of this game is to destroy the block to gain score in order to level up.
+the goal of this game is to destroy the block to gain score in order to level up. to open the game click main.exe
 
 ## Table of contents
   - [Table of contents](#table-of-contents)
@@ -10,8 +10,8 @@ the goal of this game is to destroy the block to gain score in order to level up
   - [Credit](#credit)
 
 ## How to install the game
-- [game install](https://www.markdownguide.org/extended-syntax/)
-- [git hub]()
+- [game install](https://drive.google.com/drive/folders/1PwfFfO4NjDHFcep2H8wt89efQyODMiIF?usp=sharing)
+- [git hub](https://github.com/mooton100kg/arkanoid-game.git)
 
 ## How to play the game
 - For movement use **wasd** keys
