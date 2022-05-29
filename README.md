@@ -3,7 +3,6 @@
 the goal of this game is to destroy the block to gain score in order to level up.
 
 ## Table of contents
-- [BREAKING BLOCK GAME](#breaking-block-game)
   - [Table of contents](#table-of-contents)
   - [How to install the game](#how-to-install-the-game)
   - [How to play the game](#how-to-play-the-game)
@@ -46,4 +45,4 @@ everything by mooton100kg\
 (sorry for my bad english)
 
 
-*__**this game not gonna be debuged or updated any time soon in the future so no need for bug report sorry.**__*
+*__**this game not gonna be debuged or updated any time soon so no need for bug report thank you.**__*
