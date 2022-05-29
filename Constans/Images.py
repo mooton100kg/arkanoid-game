@@ -8,4 +8,3 @@ POISON_POTION = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 
 SPECIAL_BALL_BOMB = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'bom_ball.png')), (IMAGE_WIDTH, IMAGE_HEIGHT))
 PLUS_LENGHT = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'plus_lenght.png')), (IMAGE_WIDTH, IMAGE_HEIGHT))
 PROTECTION = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'protection.png')), (IMAGE_WIDTH, IMAGE_HEIGHT))
-PAUSE = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'pause.png')), (PAUSE_HEIGHT, PAUSE_WIDTH))

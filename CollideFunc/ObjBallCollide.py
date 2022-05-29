@@ -1,3 +1,5 @@
+from Constans.Sound import COLLIDE_SOUND
+
 def obj_ball_collide(type, obj, ball):
     #get circle point
     radius = ball.radius
@@ -12,34 +14,42 @@ def obj_ball_collide(type, obj, ball):
     if rect.collidepoint(top):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'top'
     elif rect.collidepoint(bottom):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'bottom'
     elif rect.collidepoint(left):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'left'
     elif rect.collidepoint(right):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'right'
     elif rect.collidepoint(topleft):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'topleft'
     elif rect.collidepoint(topright):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'topright'
     elif rect.collidepoint(bottomleft):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'bottomleft'
     elif rect.collidepoint(bottomright):
         if type == 'block':
             obj.damage(ball.damage)
+        COLLIDE_SOUND.play()
         return 'bottomright'
     else:
         return 'none'

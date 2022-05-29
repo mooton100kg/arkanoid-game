@@ -4,13 +4,13 @@ from random import choices,choice
 
 from Constans.Images import *
 from Constans.Valuable import *
+from Constans.Sound import *
 from Constans.Level import level
 from CollideFunc import *
 from game import Player, Ball, Feature, Block, Score_bar
 
-
-
 pygame.font.init()
+pygame.mixer.init()
 
 heightest_level = 0
 
@@ -18,24 +18,6 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Arkanoid game")
 
 
-def mouse_click(obj, t, font, color):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-    
-    if obj.x + obj.width > mouse[0] > obj.x and obj.y + obj.height > mouse[1] > obj.y:
-        if click[0] == 1:
-            main()
-            
-
-        else:
-            text = font.render(t, True, color)
-            WIN.blit(text, (obj.x, obj.y))
-            pygame.display.update()
-
-    else:
-        text = font.render(t, True, WHITE)
-        WIN.blit(text, (obj.x, obj.y))
-        pygame.display.update()
 
 
 def main():
@@ -123,6 +105,7 @@ def main():
 
             if player.health <= 0:
                 game_over = True
+                GAME_OVER_SOUND.play()
 
             for ball in balls:
                 direction = set()
@@ -157,27 +140,34 @@ def main():
                     features.remove(feature)
                     if feature.effect == 'PLUS_LENGHT':
                         if not plus_lenght:
+                            FEATURE_SOUND.play()
                             PLUS_LENGHT_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
                             PLUS_LENGHT_count_down.start()
                         elif plus_lenght:
                             player.plus_lenght_time += 5
                     elif feature.effect == 'PROTECTION':
                         if not protection:
+                            FEATURE_SOUND.play()
                             protection = True
                             PROTECTION_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
                             PROTECTION_count_down.start()
                         elif protection:
                             player.protection_time += 5
                     elif feature.effect == 'SPECIAL_BALL_BOMB':
+                        FEATURE_SOUND.play()
                         balls.append(Ball(player, 8, score_bar.ball_vel, RED, 3))
                     else:
+                        FEATURE_SOUND.play()
                         effect_count_down = threading.Thread(target=player.collect_feature, args=(feature.effect,))
                         effect_count_down.start()
 
             if len(blocks) <= 0:
                 for b in choice(level):
                     blocks.append(Block(b[0],b[1],b[2],b[3],choices([1,2,3],[GREEN_W,YELLOW_W,RED_W])[0],choices(['none','PLUS_LENGHT','HEAL_POTION','POISON_POTION','SPECIAL_BALL_BOMB','PROTECTION'],[NONE_W,PLUS_LENGHT_W,HEAL_POTION_W,POSISON_POTION_W,SPECIAL_BALL_BOMB_W,PROTECTION_W])[0]))
-
+            if len(balls) == 0:
+                ball = Ball(player, 8, score_bar.ball_vel, WHITE, 1)
+                balls.append(ball)
+                BALL_SOUND.play()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -189,14 +179,29 @@ def main():
                 if event.key == pygame.K_LSHIFT and not pause and not game_over:
                     ball = Ball(player, 8, score_bar.ball_vel, WHITE, 1)
                     balls.append(ball)
+                    BALL_SOUND.play()
                 elif event.key == pygame.K_ESCAPE and not game_over:
                     pause = not pause
+                    PAUSE_SOUND.play()
                 elif event.key != pygame.K_ESCAPE and game_over:
                     run = False 
+                    ENTER_GAME_SOUND.play()
                     main()
                 elif event.key == pygame.K_ESCAPE and game_over:
                     run = False
+                    PAUSE_SOUND.play()
                     main_menu()
+
+
+def mouse_click(obj, t, font, color):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    
+    if obj.x + obj.width > mouse[0] > obj.x and obj.y + obj.height > mouse[1] > obj.y:
+        if click[0] == 1:
+            ENTER_GAME_SOUND.play()
+            main()
+            
 
 
 
@@ -204,23 +209,24 @@ def main():
 def main_menu():
     title_font = pygame.font.SysFont("comicsans", 70)
     menu_font = pygame.font.SysFont("comicsans", 40)
+    def redraw():
 
-    title = title_font.render("ARKANOID", True, WHITE)
-    start = menu_font.render("Start", True, WHITE)
+        title = title_font.render("ARKANOID", True, WHITE)
+        start = menu_font.render("Start", True, WHITE)
+        global start_rect
+        start_rect = pygame.Rect(WIDTH//2 - start.get_width()//2, HEIGHT//2 - start.get_height()//2 + 60, start.get_width(), start.get_height())
 
-    start_rect = pygame.Rect(WIDTH//2 - start.get_width()//2, HEIGHT//2 - start.get_height()//2 + 60, start.get_width(), start.get_height())
+        WIN.fill(BLACK)
+        WIN.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - title.get_height()//2))
+        WIN.blit(start, (start_rect.x, start_rect.y))
 
-    WIN.fill(BLACK)
-    WIN.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - title.get_height()//2))
-    WIN.blit(start, (start_rect.x, start_rect.y))
-
-    pygame.display.update()
+        pygame.display.update()
 
 
     run = True
 
     while run:
-        
+        redraw()
         mouse_click(start_rect, "Start", menu_font, RED)
 
         for event in pygame.event.get():
@@ -233,4 +239,4 @@ def main_menu():
         
 
 if __name__ == '__main__':
-    main()
+    main_menu()
